@@ -37,7 +37,7 @@ HP ProCurve  (Use ProCurve for Type)
 
 ## Versioning
 
-Version 0.9 - Preliminary Development
+Version 1.1 - Added multithreaded version
 
 ## Authors
 
