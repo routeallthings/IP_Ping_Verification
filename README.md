@@ -10,8 +10,6 @@ These instructions will get you a copy of the project up and running on your loc
 
 Netmiko (https://github.com/ktbyers/netmiko)
 You can install this with pip via "pip install netmiko"
-TextFSM (https://github.com/google/textfsm)
-You can install this with pip via "pip install textfsm"
 
 ## Deployment
 
