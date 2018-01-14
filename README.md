@@ -50,5 +50,3 @@ See also the list of [contributors](https://github.com/routeallthings/IP_Ping_Ve
 This project is licensed under the GNU - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
-
-* Thanks to #DEVNET and their excellent API guides that got me started
