@@ -15,6 +15,8 @@ import getpass
 import os
 import unicodedata
 import csv
+import threading
+import time
 
 '''Module Imports (Non-Native)'''
 try:
@@ -39,8 +41,10 @@ except ImportError:
 	else:
 		print "You selected an option other than yes. Please be aware that this script requires the use of textfsm. Please install manually and retry"
 		sys.exit()
+
 '''Global Variables'''
 ipv4_address = re.compile('((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)')
+MaxThreadNumber = 8
 
 '''(IOS/XE/NXOS/Comware/Procurve)'''
 
@@ -74,11 +78,9 @@ try:
 			verificationcsv.append(line.strip().split(','))
 except:
 	print "Error with importing CSV file. Check the path/permissions and try again"
-#start of verification
-if "Y" in saveresults.upper() or "YES" in saveresults.upper():
-	saveresults = "Y"
-	saveresultslist = []
-for sshdevice in verificationcsv:
+
+#Definition
+def DEF_PINGCHECK(sshdevice):
 	sshdevicename = sshdevice[:1][0]
 	sshdeviceip = sshdevice[1:][0]
 	sshdevicevendor = sshdevice[2:][0]
@@ -102,17 +104,36 @@ for sshdevice in verificationcsv:
 			pingresult = sshnet_connect.send_command(pingcheck)
 			if "!" in pingresult:
 				print "Success = " + sshdevicename + "->" + pinglistname
-				if "Y" in saveresults:
+				if "Y" in saveresults.upper():
 					saveresultslist.append(sshdevicename + ', ' + pinglistname + ', SUCCESS')
 			else:
 				print "Failure = " + sshdevicename + "->" + pinglistname
-				if "Y" in saveresults:
+				if "Y" in saveresults.upper():
 					saveresultslist.append(sshdevicename + ', ' + pinglistname + ', FAILURE')
 		sshnet_connect.disconnect()
 	except:
 		print "Failure in connecting to device " + sshdevicename + ". Please confirm that the IP address is correct"
+
+#Parallel Processing
+saveresultslist = []
+if __name__ == "__main__":
+	for sshdevice in verificationcsv:
+		sshdevicename = str(sshdevice[:1][0])
+		print "Spawning Thread for " + sshdevicename
+		t = threading.Thread(target=DEF_PINGCHECK, args=(sshdevice,))
+		t.start()
+	main_thread = threading.currentThread()
+	for it_thread in threading.enumerate():
+		if it_thread != main_thread:
+			it_thread.join()
+	
+#for sshdevice in verificationcsv:
+#	try:
+#		PINGCHECK(sshdevice)
+#	except KeyboardInterrupt:
+#		break
 print '#########################################################'
-if "Y" in saveresults:
+if "Y" in saveresults.upper():
 	print 'Saving Results to File'
 	with open(savepath, 'wb') as csvfile:
 		fieldnames = ['Source', 'Destination', 'Ping Result']
