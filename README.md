@@ -17,7 +17,7 @@ Just execute the script and answer the questions
 
 ## Built With
 
-* Netmiko (https://github.com/ktbyers/netmiko) - Thanks Kyle Byers for the excellent library
+* Netmiko (https://github.com/ktbyers/netmiko) - Thanks Kirk Byers for the excellent library
 
 ## Features
 - CSV file import for ICMP check (see template for examples)
